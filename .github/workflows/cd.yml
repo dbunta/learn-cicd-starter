@@ -8,10 +8,18 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+
+      - name: Install goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+
+      - name: Db migration
+        run: ./scripts/migrateup.sh
 
       - name: Set up Go
         uses: actions/setup-go@v5
